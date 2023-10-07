@@ -13,7 +13,6 @@ class Repositories{
     result.fold((l) => res=l, (r) => res=r);
 
     if(result.isRight()){
-      print("hello");
 
       return Right(ProfileList.fromJson(res));
     }

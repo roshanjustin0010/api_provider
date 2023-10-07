@@ -21,7 +21,6 @@ class UserListProvider extends ChangeNotifier {
 
 
     if (response.isRight()) {
-      print("hello");
       _isLoading = false;
       _isLoaded = true;
       response.fold((l) => null, (r) => _profileList = r);

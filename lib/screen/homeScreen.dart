@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:regressprovider/provider/searchUser.dart';
 import 'package:regressprovider/provider/userlist.dart';
+
+import 'detailScreen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -22,6 +25,14 @@ class HomeScreen extends StatelessWidget {
               // color: Colors.green,
               child: TextField(
                 onChanged: (value) {
+                  print(value);
+                  if(value.isEmpty){
+                    Provider.of<SearchUserProvider>(context,listen: false).searchUser(Provider.of<UserListProvider>(context,listen: false).profileList!.data!, "");
+                  }
+                  else{
+                    Provider.of<SearchUserProvider>(context,listen: false).searchUser(Provider.of<UserListProvider>(context,listen: false).profileList!.data!, value);
+                  }
+
                 },
                 decoration: InputDecoration(
                     prefixIcon: const Icon(Icons.search),
@@ -37,59 +48,60 @@ class HomeScreen extends StatelessWidget {
       Consumer<UserListProvider>(
         builder: (context,userListProvider,child) {
           if(userListProvider.isLoaded == true){
-          return  SizedBox(
-              height: double.infinity,
-              width: double.infinity,
-              child: ListView.builder(
-                  itemCount: 10,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //       builder: (context) => User(searchedlist: {
-                        //         "id": foundperson[index]['id'],
-                        //         "email": foundperson[index]['email'],
-                        //         "fname": foundperson[index]['first_name'],
-                        //         "lname": foundperson[index]['last_name'],
-                        //         "pic": foundperson[index]['avatar'],
-                        //       })),
-                        // );
-                      },
-                      child: Card(
-                        margin: const EdgeInsets.all(15.0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        color: Colors.deepPurple,
-                        child:  Padding(
-                          padding: const EdgeInsets.all(30.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              CircleAvatar(
-                                backgroundImage: NetworkImage(
-                                  userListProvider.profileList!.data![index].avatar.toString(),
-                                  // foundperson[index]['avatar'],
-                                ),
-                                radius: 40.0,
-                              ),
-                              Text(
-                                userListProvider.profileList!.data![index].firstName.toString()+
-                                    userListProvider.profileList!.data![index].lastName.toString(),
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Provider.of<SearchUserProvider>(context,listen: false).searchUser(userListProvider.profileList!.data!, "");
+            });
+          return  Consumer<SearchUserProvider>(
+            builder: (context,searchProvider,child) {
+              return SizedBox(
+                  height: double.infinity,
+                  width: double.infinity,
+                  child: ListView.builder(
+                      itemCount: searchProvider.userList.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => DetailScreen(data: searchProvider.userList[index],)),
+                            );
+                          },
+                          child: Card(
+                            margin: const EdgeInsets.all(15.0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            color: Colors.deepPurple,
+                            child:  Padding(
+                              padding: const EdgeInsets.all(30.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                children: [
+                                  CircleAvatar(
+                                    backgroundImage: NetworkImage(
+                                     searchProvider.userList[index].avatar!,
+                                      // foundperson[index]['avatar'],
+                                    ),
+                                    radius: 40.0,
+                                  ),
+                                  Text(
+                                    searchProvider.userList[index].firstName!+" "+
+                                        searchProvider.userList[index].lastName!,
 
-                                // foundperson[index]['first_name'].toString(),
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.w900, fontSize: 30),
+                                    // foundperson[index]['first_name'].toString(),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w900, fontSize: 15),
+                                  ),
+                                ],
                               ),
-                            ],
+                            ),
                           ),
-                        ),
-                      ),
-                    );
-                  }),
-            );
+                        );
+                      }),
+                );
+            }
+          );
 
           }
           else if(userListProvider.isLError == true){

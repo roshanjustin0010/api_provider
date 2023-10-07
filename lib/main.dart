@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:regressprovider/provider/searchUser.dart';
 import 'package:regressprovider/provider/userlist.dart';
 import 'package:regressprovider/screen/homeScreen.dart';
 
@@ -17,7 +18,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData.dark(),
       home: MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (context) => UserListProvider()),
+          ChangeNotifierProvider<UserListProvider>(create: (context) => UserListProvider()),
+          ChangeNotifierProvider<SearchUserProvider>(create: (context) => SearchUserProvider()),
+
         ],
         child: HomeScreen()
       ),
