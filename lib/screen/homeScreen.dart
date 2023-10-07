@@ -8,7 +8,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<UserListProvider>(context,listen: false).getUserList();
     });
     return Scaffold(
@@ -36,16 +36,8 @@ class HomeScreen extends StatelessWidget {
       body:
       Consumer<UserListProvider>(
         builder: (context,userListProvider,child) {
-          if(userListProvider.isLoading == true){
-            return SizedBox(
-              height: 50,
-              width: 50,
-              child: CircularProgressIndicator(),
-            );
-          }
-          else{
-            return userListProvider.isLoaded==true?
-            Container(
+          if(userListProvider.isLoaded == true){
+          return  SizedBox(
               height: double.infinity,
               width: double.infinity,
               child: ListView.builder(
@@ -72,7 +64,7 @@ class HomeScreen extends StatelessWidget {
                         ),
                         color: Colors.deepPurple,
                         child:  Padding(
-                          padding: EdgeInsets.all(30.0),
+                          padding: const EdgeInsets.all(30.0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
@@ -88,7 +80,7 @@ class HomeScreen extends StatelessWidget {
                                     userListProvider.profileList!.data![index].lastName.toString(),
 
                                 // foundperson[index]['first_name'].toString(),
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontWeight: FontWeight.w900, fontSize: 30),
                               ),
                             ],
@@ -97,11 +89,23 @@ class HomeScreen extends StatelessWidget {
                       ),
                     );
                   }),
-            )
-            : Center(
+            );
+
+          }
+          else if(userListProvider.isLError == true){
+            return const Center(
               child: Text("SomeThing went wrong"),
             );
             
+          }
+          else{
+            return const Center(
+              child: SizedBox(
+                height: 50,
+                width: 50,
+                child: CircularProgressIndicator(),
+              ),
+            );
           }
         }
       )

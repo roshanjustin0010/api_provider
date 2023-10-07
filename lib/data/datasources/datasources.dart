@@ -9,7 +9,7 @@ class DataSources{
     print("hello");
 
 
-    final response= await http.get(Uri.parse("${Constants.baseUrl}/api/users?page=2"));
+    final response= await http.get(Uri.parse("${Constants.baseUrl}api/users?page=2"));
 
     if(response.statusCode == 200)
       {
